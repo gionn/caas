@@ -1,8 +1,23 @@
-from flask import Flask, jsonify
+from flask import Flask, abort, jsonify, request
+import os
 from store import redis
 
 
 app = Flask(__name__)
+
+
+@app.errorhandler(401)
+def unauthorized(e):
+    return jsonify(message=str(e)), 401
+
+
+@app.before_request
+def authenticate():
+    if 'CAAS-Auth-Token' not in request.headers:
+        abort(401)
+
+    if request.headers['CAAS-Auth-Token'] != os.getenv('SECRET_KEY', 'GIAO'):
+        abort(401)
 
 
 @app.route('/<label>', methods=['GET'])

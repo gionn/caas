@@ -36,6 +36,12 @@ def incr(label):
     return jsonify(counter=counter)
 
 
+@app.route('/<label>/<int:counter>', methods=['POST'])
+def set(label, counter):
+    redis.set(label, counter)
+    return jsonify(counter=counter)
+
+
 @app.route('/<label>', methods=['DELETE'])
 def reset(label):
     counter = redis.delete(label)

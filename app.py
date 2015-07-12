@@ -1,5 +1,6 @@
 from flask import Flask, abort, jsonify, request
-import os
+
+from config import SECRET_KEY
 from store import redis
 
 
@@ -16,7 +17,7 @@ def authenticate():
     if 'CAAS-Auth-Token' not in request.headers:
         abort(401)
 
-    if request.headers['CAAS-Auth-Token'] != os.getenv('SECRET_KEY', 'GIAO'):
+    if request.headers['CAAS-Auth-Token'] != SECRET_KEY:
         abort(401)
 
 

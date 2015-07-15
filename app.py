@@ -23,6 +23,15 @@ def authenticate():
 
 @app.route('/<label>', methods=['GET'])
 def get(label):
+    """
+    @api {get} /:label Get counter value
+    @apiName GetCounter
+    @apiGroup Counter
+
+    @apiParam {String} label Counter label.
+
+    @apiSuccess {Number} counter Current value.
+    """
     counter = redis.get(label)
 
     if counter is None:
@@ -33,18 +42,46 @@ def get(label):
 
 @app.route('/<label>', methods=['PUT'])
 def incr(label):
+    """
+    @api {put} /:label Increment counter
+    @apiName IncrementCounter
+    @apiGroup Counter
+
+    @apiParam {String} label Counter label.
+
+    @apiSuccess {Number} counter Current value.
+    """
     counter = redis.incr(label)
     return jsonify(counter=counter)
 
 
 @app.route('/<label>/<int:counter>', methods=['POST'])
 def set(label, counter):
+    """
+    @api {post} /:label/:counter Directly set counter value
+    @apiName SetCounter
+    @apiGroup Counter
+
+    @apiParam {String} label Counter label.
+    @apiParam {Number} counter New counter value.
+
+    @apiSuccess {Number} counter Current value.
+    """
     redis.set(label, counter)
     return jsonify(counter=counter)
 
 
 @app.route('/<label>', methods=['DELETE'])
 def reset(label):
+    """
+    @api {delete} /:label Reset counter
+    @apiName ResetCounter
+    @apiGroup Counter
+
+    @apiParam {String} label Counter label.
+
+    @apiSuccess {Number} counter Initial value.
+    """
     counter = redis.delete(label)
     return jsonify(counter=1)
 

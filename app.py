@@ -84,10 +84,10 @@ def reset(label):
 
     @apiParam {String} label Counter label.
 
-    @apiSuccess {Number} counter Initial value.
+    @apiSuccess {Number} counter Zero value.
     """
-    counter = redis.delete(label)
-    return jsonify(counter=1)
+    redis.delete(label)
+    return jsonify(counter=0)
 
 
 if __name__ == '__main__':

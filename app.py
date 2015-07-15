@@ -1,6 +1,8 @@
 from flask import Flask, abort, jsonify, request
+import thread
 
 from config import SECRET_KEY
+import notify
 from store import redis
 
 
@@ -52,6 +54,7 @@ def incr(label):
     @apiSuccess {Number} counter Current value.
     """
     counter = redis.incr(label)
+    thread.start_new_thread(notify.gitter, (label, counter))
     return jsonify(counter=counter)
 
 
@@ -68,6 +71,7 @@ def set(label, counter):
     @apiSuccess {Number} counter Current value.
     """
     redis.set(label, counter)
+    thread.start_new_thread(notify.gitter, (label, counter))
     return jsonify(counter=counter)
 
 

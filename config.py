@@ -9,5 +9,6 @@ def get_first_env(keys, default):
     return default
 
 
+GITTER_WEBHOOK = os.getenv('GITTER_WEBHOOK')
 REDIS_URL = get_first_env(['REDISTOGO_URL', 'REDIS_URL'], 'redis://localhost:6379')
 SECRET_KEY = os.getenv('SECRET_KEY', 'GIAO')

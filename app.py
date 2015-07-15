@@ -32,12 +32,12 @@ def get(label):
 
     @apiParam {String} label Counter label.
 
-    @apiSuccess {Number} counter Current value.
+    @apiSuccess {Number} counter Current value, 0 if label doesn't exist.
     """
     counter = redis.get(label)
 
     if counter is None:
-        counter = redis.incr(label)
+        counter = 0
 
     return jsonify(counter=int(counter))
 

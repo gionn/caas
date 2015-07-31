@@ -1,4 +1,4 @@
-from flask import Flask, abort, jsonify, request
+from flask import Flask, abort, jsonify, render_template, request
 import thread
 
 from config import SECRET_KEY
@@ -16,6 +16,9 @@ def unauthorized(e):
 
 @app.before_request
 def authenticate():
+    if request.endpoint == 'get_html':
+        return
+
     if 'CAAS-Auth-Token' not in request.headers:
         abort(401)
 
@@ -88,6 +91,16 @@ def reset(label):
     """
     redis.delete(label)
     return jsonify(counter=0)
+
+
+@app.route('/<label>.html', methods=['GET'])
+def get_html(label):
+    counter = redis.get(label)
+
+    if counter is None:
+        counter = 0
+
+    return render_template('counter.html', label=label, counter=int(counter))
 
 
 if __name__ == '__main__':

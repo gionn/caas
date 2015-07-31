@@ -3,7 +3,7 @@ import thread
 
 from config import SECRET_KEY
 import notify
-from store import redis
+import store
 
 
 app = Flask(__name__)
@@ -37,12 +37,9 @@ def get(label):
 
     @apiSuccess {Number} counter Current value, 0 if label doesn't exist.
     """
-    counter = redis.get(label)
+    counter = store.get(label)
 
-    if counter is None:
-        counter = 0
-
-    return jsonify(counter=int(counter))
+    return jsonify(counter=counter)
 
 
 @app.route('/<label>', methods=['PUT'])
@@ -56,7 +53,7 @@ def incr(label):
 
     @apiSuccess {Number} counter Current value.
     """
-    counter = redis.incr(label)
+    counter = store.incr(label)
     thread.start_new_thread(notify.gitter, (label, counter))
     return jsonify(counter=counter)
 
@@ -73,7 +70,7 @@ def set(label, counter):
 
     @apiSuccess {Number} counter Current value.
     """
-    redis.set(label, counter)
+    store.set(label, counter)
     thread.start_new_thread(notify.gitter, (label, counter))
     return jsonify(counter=counter)
 
@@ -89,18 +86,15 @@ def reset(label):
 
     @apiSuccess {Number} counter Zero value.
     """
-    redis.delete(label)
+    store.delete(label)
     return jsonify(counter=0)
 
 
 @app.route('/<label>.html', methods=['GET'])
 def get_html(label):
-    counter = redis.get(label)
+    counter = store.get(label)
 
-    if counter is None:
-        counter = 0
-
-    return render_template('counter.html', label=label, counter=int(counter))
+    return render_template('counter.html', label=label, counter=counter)
 
 
 if __name__ == '__main__':

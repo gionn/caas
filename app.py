@@ -1,5 +1,4 @@
 from flask import Flask, abort, jsonify, render_template, request
-import thread
 
 from config import SECRET_KEY
 import notify
@@ -54,7 +53,7 @@ def incr(label):
     @apiSuccess {Number} counter Current value.
     """
     counter = store.incr(label)
-    thread.start_new_thread(notify.gitter, (label, counter))
+    notify.notify_all(label, counter)
     return jsonify(counter=counter)
 
 
@@ -71,7 +70,7 @@ def set(label, counter):
     @apiSuccess {Number} counter Current value.
     """
     store.set(label, counter)
-    thread.start_new_thread(notify.gitter, (label, counter))
+    notify.notify_all(label, counter)
     return jsonify(counter=counter)
 
 

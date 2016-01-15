@@ -1,9 +1,16 @@
 import requests
+import threading
 
 from config import GITTER_WEBHOOK
 
 
-def gitter(label, counter):
+def notify_all(label, counter):
+    t = threading.Thread(target=_gitter, args=(label, counter))
+    t.setDaemon(True)
+    t.start()
+
+
+def _gitter(label, counter):
     if GITTER_WEBHOOK is None:
         return
 

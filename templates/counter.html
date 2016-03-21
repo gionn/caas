@@ -27,7 +27,34 @@
   </head>
   <body>
     <div class="container">
-      <p><small>#</small>{{ counter }}</p>
+      <p ondblclick="increment()">
+        <small>#</small>{{ counter }}
+      </p>
     </div>
   </body>
+  <script>
+  function increment() {
+    var token = prompt("Password please");
+    if (!token) return;
+
+    fetch('{{ label }}', {
+      method: 'PUT',
+      headers: new Headers({
+        'CAAS-Auth-Token': token
+      })
+    }).then(function(response) {
+      if (response.ok) {
+        location.reload();
+      } else {
+        var i = 0;
+        var intervalId = window.setInterval(function() {
+          document.body.style.background = i % 2 == 0 ? '#ef3d47' : 'white';
+          if (++i === 6) {
+            window.clearInterval(intervalId);
+          }
+        }, 150);
+      }
+    });
+  }
+  </script>
 </html>
